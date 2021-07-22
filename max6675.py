@@ -5,7 +5,7 @@ import time
 
 class MAX6675:
     # set pin number for communicate with MAX6675
-    def __init__(self, CS, SCK, SO, UNIT) -> None:
+    def __init__(self, CS, SCK, SO) -> None:
         self._cs_no = CS
         self._cs = Pin(CS, Pin.OUT)
         self._cs.on()
@@ -15,7 +15,6 @@ class MAX6675:
         
         self._so = Pin(SO, Pin.IN)
         self._so.on()
-        self._unit = UNIT
 
     def read_temp(self) -> float:
         self._cs.off()
@@ -44,12 +43,7 @@ class MAX6675:
 
         self._cs.on()
 
-        if self._unit == 0:
-            temp = Value
-        if self._unit == 1:
-            temp = Value * 0.25 # Celsius
-        if self._unit == 2:
-            temp = Value * 0.25 * 9.0 / 5.0 + 32.0
+        temp = Value * 0.25 # Celsius
 
         if error_tc != 0:
             return float(str(self._cs_no))
