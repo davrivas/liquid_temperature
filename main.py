@@ -1,8 +1,9 @@
-from max6675 import MAX6675
 from machine import I2C, PWM, Pin
-from ssd1306 import SSD1306_I2C
-
 import network, time, urequests
+from max6675 import MAX6675
+from ssd1306 import SSD1306_I2C
+from oled_image import find_image
+from api import api
 
 def connect_wifi(connection, password) -> boolean:
       global my_network
@@ -10,7 +11,7 @@ def connect_wifi(connection, password) -> boolean:
       if not my_network.isconnected(): # if it is not connected
           my_network.active(True) # activate interface
           my_network.connect(connection, password) # try to connect to network
-          print('Connecting to Wifi', red +"…")
+          print('Connecting to Wifi', connection +"…")
           timeout = time.time()
           while not my_network.isconnected(): #while it's not connected
               if (time.ticks_diff(time.time(), timeout) > 10):
@@ -41,25 +42,30 @@ so = 4
 thermocouple = MAX6675(cs, sck, so)
 
 #shows a welcome message
-oled.text("Welcome", 0, 10)
-oled.show()
+oled.fill(0)  #limpiar
+oled.blit(find_image("images/welcome.pbm"), 0, 0)
+oled.show()  #mostrar
 time.sleep(2)
 
+api = api() # starts api
+
+# image paths
+normal_temp_path = "images/temperature.pbm"
+warning_temp_path = "images/warning.pbm"
+high_temp_path = "images/fire.pbm"
+
+# the method that will be executed at 
 def main():
-    from api import api
-    
     if connect_wifi(wifi_connection, password): # connect to wifi
         oled.fill(0)
+        oled.blit(find_image("images/check.pbm"), 0, 0)
+        oled.text("Connected", 55, 20)
+        oled.show()
+        
         print ("Conexión exitosa!")
         print('Datos de la red (IP/netmask/gw/DNS):', my_network.ifconfig())
         
-        oled.text("Connection", 0, 10)
-        oled.text("successful!", 0, 20)
-        oled.text(":)", 0, 30)
-        oled.show()
         time.sleep(1.5)
-        
-        api = api() # starts api
         
         while True:
             #clear the screen
@@ -70,14 +76,8 @@ def main():
             # in this case it returns "-22"
             temp = thermocouple.read_temp()
             
-            # format the 
-            text = "{:.2f} C".format(temp)
-            
-            # show temperature
-            oled.text("-" * 16, 0, 10)
-            oled.text("Temperature:", 0, 20)
-            oled.text(text, 0, 30)
-            print("Temperature", text)
+            # format the temperature
+            text = "{:.2f} C".format(temp)                      
             
             if (temp >= 90): # if temperature is 90 or greater, turn on red led and play a sound for half second
                 red_led.on()
@@ -86,22 +86,23 @@ def main():
                 time.sleep(.5)
                 buzzer.duty(0)
                 red_led.off()
-                oled.text("PLEASE STOP!!!", 0, 40)
+                oled.blit(find_image(high_temp_path), 0, 0)
             elif (temp > 75): # if temperature is greater than 75, turn on blue led
                 red_led.off()
                 blue_led.on()
                 if (buzzer.duty() != 0):
                     buzzer.duty(0)
-                oled.text("HIGH TEMPERATURE", 0, 40)
+                oled.blit(find_image(warning_temp_path), 0, 0)
             else: # temperature is normal
                 blue_led.off()
                 red_led.off()
                 if (buzzer.duty() != 0):
                     buzzer.duty(0)
-                oled.text("OK", 0, 40)
+                oled.blit(find_image(normal_temp_path), 0, 0)
                 
-            oled.text("-" * 16, 0, 50)
+            oled.text(text, 55, 20) 
             oled.show()
+            print("Temperature", text)
             api.graph_temp(temp)
             
             if (temp >= 90): # send an alert if temperature is more than 90°C
@@ -110,7 +111,9 @@ def main():
             time.sleep(1)
     else: # if it is not connected
         oled.fill(0)
-        oled.text("Can't connect :(", 0, 0)
+        oled.blit(find_image("images/error.pbm"), 0, 0)
+        oled.text("Can't", 60, 20)
+        oled.text("connect", 60, 30)
         oled.show()
         print("Can't connect :(")
         my_network.active(False)
