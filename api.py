@@ -9,7 +9,7 @@ class api:
     
     def send_email(self, temp: float) -> None:
         if (time.ticks_diff(time.time(), self._email_time) > 60): # if one minute has passed
-            endpoint = self._email_url + "?value1=" + "{:.2f}°C".format(temp)
+            endpoint = self._email_url + "?value1=" + "{:.2f}".format(temp)
             response = urequests.get(endpoint)
             print("Send email")
             print("Response:", response.text)
