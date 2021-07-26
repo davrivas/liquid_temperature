@@ -49,12 +49,7 @@ time.sleep(2)
 
 api = api() # starts api
 
-# image paths
-normal_temp_path = "images/temperature.pbm"
-warning_temp_path = "images/warning.pbm"
-high_temp_path = "images/fire.pbm"
-
-# the method that will be executed at 
+# the method that will be executed at runtime
 def main() -> None:
     if connect_wifi(wifi_connection, password): # connect to wifi
         oled.fill(0)
@@ -86,19 +81,19 @@ def main() -> None:
                 time.sleep(.5)
                 buzzer.duty(0)
                 red_led.off()
-                oled.blit(find_image(high_temp_path), 0, 0)
+                oled.blit(find_image("images/fire.pbm"), 0, 0)
             elif (temp > 75): # if temperature is greater than 75, turn on blue led
                 red_led.off()
                 blue_led.on()
                 if (buzzer.duty() != 0):
                     buzzer.duty(0)
-                oled.blit(find_image(warning_temp_path), 0, 0)
+                oled.blit(find_image("images/warning.pbm"), 0, 0)
             else: # temperature is normal
                 blue_led.off()
                 red_led.off()
                 if (buzzer.duty() != 0):
                     buzzer.duty(0)
-                oled.blit(find_image(normal_temp_path), 0, 0)
+                oled.blit(find_image("images/temperature.pbm"), 0, 0)
                 
             oled.text(text, 55, 20) 
             oled.show()
