@@ -5,7 +5,7 @@ class api:
         self._email_url = "https://maker.ifttt.com/trigger/email/with/key/CS5bYnTkWNS01hQSP5rYU"
         self._graph_url = "https://api.thingspeak.com/update?api_key=623UWTQMR6ZMQPH4"
         self._email_time = time.time() - 60
-        self._graph_time = time.time() - 15
+        self._graph_time = time.time()
     
     def send_email(self, temp: float) -> None:
         if (time.ticks_diff(time.time(), self._email_time) > 60): # if one minute has passed

@@ -26,10 +26,10 @@ class MAX6675:
         self._sck.on()
         time.sleep(0.001)
         self._sck.off()
-        Value = 0
+        value = 0
         for i in range(11, -1, -1):
             self._sck.on()
-            Value = Value + (self._so.value() * (2 ** i))
+            value = value + (self._so.value() * (2 ** i))
             self._sck.off()
 
         self._sck.on()
@@ -43,7 +43,7 @@ class MAX6675:
 
         self._cs.on()
 
-        temp = Value * 0.25 # Celsius
+        temp = value * 0.25 # Celsius
 
         if error_tc != 0:
             return float(str(self._cs_no))

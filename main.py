@@ -1,23 +1,23 @@
 from machine import I2C, PWM, Pin
-import network, time, urequests
+import network, time
 from max6675 import MAX6675
 from ssd1306 import SSD1306_I2C
 from oled_image import find_image
 from api import api
 
-def connect_wifi(connection, password) -> boolean:
-      global my_network
-      my_network = network.WLAN(network.STA_IF)
-      if not my_network.isconnected(): # if it is not connected
-          my_network.active(True) # activate interface
-          my_network.connect(connection, password) # try to connect to network
-          print('Connecting to Wifi', connection +"…")
-          timeout = time.time()
-          while not my_network.isconnected(): #while it's not connected
-              if (time.ticks_diff(time.time(), timeout) > 10):
-                  return False
-      return True
-    
+def connect_wifi(connection, password) -> bool:
+    global my_network
+    my_network = network.WLAN(network.STA_IF)
+    if not my_network.isconnected(): # if it is not connected
+        my_network.active(True) # activate interface
+        my_network.connect(connection, password) # try to connect to network
+        print('Connecting to Wifi', connection +"…")
+        timeout = time.time()
+        while not my_network.isconnected(): #while it's not connected
+            if (time.ticks_diff(time.time(), timeout) > 10):
+                return False
+    return True
+
 wifi_connection = "Claro_61039A"
 password = "M5C9A3W7P3W8"
 
@@ -55,7 +55,7 @@ warning_temp_path = "images/warning.pbm"
 high_temp_path = "images/fire.pbm"
 
 # the method that will be executed at 
-def main():
+def main() -> None:
     if connect_wifi(wifi_connection, password): # connect to wifi
         oled.fill(0)
         oled.blit(find_image("images/check.pbm"), 0, 0)
@@ -117,7 +117,6 @@ def main():
         oled.show()
         print("Can't connect :(")
         my_network.active(False)
-    
 
 if __name__ == "__main__":
     main()
