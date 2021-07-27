@@ -5,15 +5,15 @@ import time
 
 class MAX6675:
     # set pin number for communicate with MAX6675
-    def __init__(self, CS, SCK, SO) -> None:
-        self._cs_no = CS
-        self._cs = Pin(CS, Pin.OUT)
+    def __init__(self, cs: int, sck: int, so: int) -> None:
+        self._cs_no = cs
+        self._cs = Pin(cs, Pin.OUT)
         self._cs.on()
         
-        self._sck = Pin(SCK, Pin.OUT)
+        self._sck = Pin(sck, Pin.OUT)
         self._sck.off()
         
-        self._so = Pin(SO, Pin.IN)
+        self._so = Pin(so, Pin.IN)
         self._so.on()
 
     def read_temp(self) -> float:

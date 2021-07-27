@@ -1,4 +1,3 @@
-import time
 import framebuf
 
 # finds image in pbm format
