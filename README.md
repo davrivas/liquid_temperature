@@ -10,8 +10,7 @@ This repository is made for the Python Course (Areandina)
 * **MAX6675:** https://github.com/archemius/MAX6675-Raspberry-pi-python
 
 ## Circuit
-
-(...circuit image)
+![Esquema 2](https://user-images.githubusercontent.com/15196755/127248732-200261b8-ff40-4b1b-95f4-e709ac678e1b.png)
 
 ## ESP32 Pinout
 * **SCK:** 15
