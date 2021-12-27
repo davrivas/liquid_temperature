@@ -21,3 +21,6 @@ This repository is made for the Python Course (Areandina)
 * **Buzzer:** 32 *(PMW)*
 * **Red led:** 19
 * **Blue led:** 18
+
+## Explanatory video
+https://youtu.be/MJ_hzpceY80
